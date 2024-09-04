@@ -5,28 +5,28 @@ const app = express()
 const morgan = require('morgan')
 const Person = require('./models/person')
 
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+// let persons = [
+//     {
+//       "id": "1",
+//       "name": "Arto Hellas",
+//       "number": "040-123456"
+//     },
+//     {
+//       "id": "2",
+//       "name": "Ada Lovelace",
+//       "number": "39-44-5323523"
+//     },
+//     {
+//       "id": "3",
+//       "name": "Dan Abramov",
+//       "number": "12-43-234345"
+//     },
+//     {
+//       "id": "4",
+//       "name": "Mary Poppendieck",
+//       "number": "39-23-6423122"
+//     }
+// ]
 
 app.use(express.json())
 app.use(cors())
@@ -36,10 +36,10 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 // GET
 app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-  })
-  
-app.get('/api/persons', (request, response) => { 
+  response.send('<h1>Hello World!</h1>')
+})
+
+app.get('/api/persons', (request, response) => {
   Person.find({})
     .then(persons => {
       response.json(persons)
@@ -72,7 +72,7 @@ app.get('/info', (request, response) => {
 // DELETE
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -82,26 +82,26 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-	if (!(body.name && body.number)) {
-		return response.status(400).json({ 
-			error: 'content missing' 
-		})
-    }
+  if (!(body.name && body.number)) {
+    return response.status(400).json({
+      error: 'content missing'
+    })
+  }
 
-	if (body.name) {
-    Person.findOne({name: body.name})
+  if (body.name) {
+    Person.findOne({ name: body.name })
       .then(existingPerson => {
         if (existingPerson) {
-          return response.status(409).json({ 
-            error: 'person already exists' 
-          });
+          return response.status(409).json({
+            error: 'person already exists'
+          })
         }
 
         const person = new Person({
           name: body.name,
           number: body.number
         })
-    
+
         person.save()
           .then(savedPerson => {
             response.json(savedPerson)
@@ -113,7 +113,7 @@ app.post('/api/persons', (request, response, next) => {
 
 // PUT
 app.put('/api/persons/:id', (request, response) => {
-  const {name, number} = request.body
+  const { name, number } = request.body
   const person = { name, number }
 
   Person.findByIdAndUpdate(
