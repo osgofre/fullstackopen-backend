@@ -40,9 +40,14 @@ app.get('/', (request, response) => {
   })
   
 app.get('/api/persons', (request, response) => {
+  console.log('GET /api/persons');
+  
   Person.find({})
     .then(persons => {
       response.json(persons)
+    })
+    .catch(error => {
+      console.log(error)
     })
 })
 
